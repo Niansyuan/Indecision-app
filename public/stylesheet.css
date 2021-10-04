@@ -5,6 +5,11 @@
 div {
     color:brown;
 }
+
+h1 {
+    margin: 10px;
+}
+
 h3 {
     margin: 10px;
 }
@@ -17,10 +22,13 @@ span {
     
     grid-template-columns: 10% 10% 10%;
 }
-button{
+button {
     color:rgb(255, 228, 194);
     margin: 10px;
     padding: 3px 9px;
     border-radius: 5px;
     background-color: rgb(255, 125, 85);
+}
+input {
+    margin: 10px;
 }
