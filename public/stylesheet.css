@@ -1,0 +1,26 @@
+*{
+    background-color: rgb(255, 188, 177);
+    font-family: 'Oswald', sans-serif;
+}
+div {
+    color:brown;
+}
+h3 {
+    margin: 10px;
+}
+p {
+    margin: 10px;
+}
+
+span {
+    display: grid;
+    
+    grid-template-columns: 10% 10% 10%;
+}
+button{
+    color:rgb(255, 228, 194);
+    margin: 10px;
+    padding: 3px 9px;
+    border-radius: 5px;
+    background-color: rgb(255, 125, 85);
+}
