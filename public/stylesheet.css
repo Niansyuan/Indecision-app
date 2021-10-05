@@ -1,5 +1,5 @@
 *{
-    background-color: rgb(255, 188, 177);
+    background-color: rgb(253, 226, 184);
     font-family: 'Oswald', sans-serif;
 }
 div {
@@ -26,9 +26,18 @@ button {
     color:rgb(255, 228, 194);
     margin: 10px;
     padding: 3px 9px;
+    border:none;
     border-radius: 5px;
     background-color: rgb(255, 125, 85);
 }
+button:hover {
+    background-color:rgb(252, 108, 64) ;
+}
+button:disabled {
+    background-color:rgb(168, 168, 168) ;
+}
 input {
     margin: 10px;
+    border-color: silver;
+    background-color: seashell;
 }

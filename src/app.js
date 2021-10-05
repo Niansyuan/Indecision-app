@@ -4,7 +4,7 @@ const app={
     subtitle:'Pick whatever it comes',
     options:[]
 }
-
+//Add option button
 const onFormSubmit=(e)=>{ //e為onSubmit事件
     e.preventDefault();
 
@@ -19,14 +19,21 @@ const onFormSubmit=(e)=>{ //e為onSubmit事件
         console.log('error')
     }
 }
-
+//Remove button
 const onRemoveAll=()=>{
     app.options=[]
     render()
 }
+//pick option button
+const onPickOption=()=>{
+    const randomNum=Math.floor(Math.random() * app.options.length)
+    const option=app.options[randomNum]
+    alert(option)
+}
 
 const appRoot=document.getElementById('app');
 
+//render after click buttons
 const render=()=>{
     const template=(
         //use{}to introduce the content, that we can reuse the template
@@ -36,12 +43,19 @@ const render=()=>{
             {app.subtitle && <h3>{app.subtitle}</h3>}
             <p>{app.options.length>0 ? 'Here are your options:':'No options'}</p>
             <p>{app.options.length}</p>
+            <button type='text' name='pickOption' onClick={onPickOption} disabled={app.options.length===0}>What should I do</button>
             <button type='text' name='removeAll' onClick={onRemoveAll}>Remove All</button>
             <form onSubmit={onFormSubmit}>
                 <input type='text' name='option'></input>
                 <button>Add Option</button>
             </form>
-            
+
+            <ol type='1'>
+            {
+                app.options.map((option)=><li key={option}>{option}</li>)   
+            }
+            </ol>
+
         </div>
     );
     ReactDOM.render(template, appRoot)
