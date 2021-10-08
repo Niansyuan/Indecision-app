@@ -10,11 +10,8 @@ class IndecisionApp extends React.Component {
         }
     }
     handleDeleteOptions(){
-        this.setState(()=>{
-            return{
-                options:[]
-            }
-        })
+        // 進階語法:用大括號將內容括起來，返回一個object的表示法
+        this.setState(()=>({options:[]}))
     }
 
     handlePick(){
@@ -35,12 +32,11 @@ class IndecisionApp extends React.Component {
         }else if(this.state.options.indexOf(option) > -1){
             return 'This option is already exist'
         }
-
         this.setState((prevState)=>{
             return {
-                options:prevState.options.concat([option])
+                options:prevState.options.concat[option]
             }
-        })
+        }) 
     }
 
     render() {
@@ -137,9 +133,7 @@ class AddOption extends React.Component{
         const error=this.props.handleAddOption(option)
         e.target.elements.option.value=''
         
-        this.setState(()=>{
-            return{error}
-        })
+        this.state(()=>({error}))
     }
 
     render(){

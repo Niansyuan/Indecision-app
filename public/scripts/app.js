@@ -47,6 +47,7 @@ var IndecisionApp = /*#__PURE__*/function (_React$Component) {
   _createClass(IndecisionApp, [{
     key: "handleDeleteOptions",
     value: function handleDeleteOptions() {
+      // 進階語法:用大括號將內容括起來，返回一個object的表示法
       this.setState(function () {
         return {
           options: []
@@ -79,7 +80,7 @@ var IndecisionApp = /*#__PURE__*/function (_React$Component) {
 
       this.setState(function (prevState) {
         return {
-          options: prevState.options.concat([option])
+          options: prevState.options.concat[option]
         };
       });
     }
@@ -167,7 +168,7 @@ var AddOption = /*#__PURE__*/function (_React$Component2) {
       var option = e.target.elements.option.value.trim();
       var error = this.props.handleAddOption(option);
       e.target.elements.option.value = '';
-      this.setState(function () {
+      this.state(function () {
         return {
           error: error
         };
