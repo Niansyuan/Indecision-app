@@ -66,56 +66,57 @@ class IndecisionApp extends React.Component {
         )
     }
 }
-
-class Header extends React.Component {
-    render(){
-        return (
-            <div>
-                <h1>{this.props.title}</h1>
-                <h3>{this.props.subtitle}</h3>
-            </div>
-        )
-    }
-}
-            
-class Action extends React.Component {
-    render(){
-        return (
-            <div>
-                <button 
-                    onClick={this.props.handlePick}
-                    disabled={!this.props.hasOptions}
-                >
-                    Ask for the answer
-                </button>
-            </div>
-        )
-    }
+//function component 
+//(當內容沒有太複雜時可以選用function component，會比class component快速)
+const Header=(props)=>{
+    return (
+        <div>
+            <h1>{props.title}</h1>
+            <h3>{props.subtitle}</h3>
+        </div>
+    )
 }
 
-class Options extends React.Component {
-    render(){
-        return (
-            <div>
-                <button onClick={this.props.handleDeleteOptions}>Remove All</button>
-                {
-                    this.props.options.map((option)=><Option key={option} optionText={option}/>)
-                }
-            </div>
-        )
-    }
+//function componet
+const Action=(props)=>{
+    return (
+        <div>
+            <button
+            onClick={props.handlePick}
+            disabled={!props.hasOptions}
+            >
+                Pick one
+            </button>
+        </div>
+    )
 }
 
-class Option extends React.Component{
-    render(){
-        return (
-            <div>
-                <p>{this.props.optionText}</p> 
-            </div>
-        )
-    }
+//function component
+const Options=(props)=>{
+    return (
+        <div>
+            <button
+            onClick={props.handleDeleteOptions}
+            >
+                Remove All
+            </button>
+            {
+                props.options.map((option)=><Option key={option} optionText={option}/>)
+            }
+        </div>
+    )
 }
 
+//function component
+const Option=(props)=>{
+    return (
+        <div>
+            <p>{props.optionText}</p>
+        </div>
+    )
+}
+
+//class component
 class AddOption extends React.Component{
     constructor(props){
         super(props)
@@ -140,7 +141,7 @@ class AddOption extends React.Component{
         return (
             <div>
                 <form onSubmit={this.handleAddOption}>
-                    <input type='text' name='option'></input>
+                    <input type='text' name='option' autocomplete='off'></input>
                     <button>Add option</button>
                 </form>
                 {this.state.error && <p id='error'>{this.state.error}</p> }
