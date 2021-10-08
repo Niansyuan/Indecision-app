@@ -37,6 +37,7 @@ var IndecisionApp = /*#__PURE__*/function (_React$Component) {
     _this.handleDeleteOptions = _this.handleDeleteOptions.bind(_assertThisInitialized(_this));
     _this.handlePick = _this.handlePick.bind(_assertThisInitialized(_this));
     _this.handleAddOption = _this.handleAddOption.bind(_assertThisInitialized(_this));
+    _this.handleDeleteSingleOption = _this.handleDeleteSingleOption.bind(_assertThisInitialized(_this));
     _this.state = {
       options: props.options //來自下方的IndecisionApp.defaultProps
 
@@ -51,6 +52,17 @@ var IndecisionApp = /*#__PURE__*/function (_React$Component) {
       this.setState(function () {
         return {
           options: []
+        };
+      });
+    }
+  }, {
+    key: "handleDeleteSingleOption",
+    value: function handleDeleteSingleOption(optionToRemove) {
+      this.setState(function (prevState) {
+        return {
+          options: prevState.options.filter(function (option) {
+            return optionToRemove !== option;
+          })
         };
       });
     }
@@ -80,7 +92,7 @@ var IndecisionApp = /*#__PURE__*/function (_React$Component) {
 
       this.setState(function (prevState) {
         return {
-          options: prevState.options.concat[option]
+          options: prevState.options.concat([option])
         };
       });
     }
@@ -97,7 +109,8 @@ var IndecisionApp = /*#__PURE__*/function (_React$Component) {
         handlePick: this.handlePick
       }), /*#__PURE__*/React.createElement(Options, {
         options: this.state.options,
-        handleDeleteOptions: this.handleDeleteOptions
+        handleDeleteOptions: this.handleDeleteOptions,
+        handleDeleteSingleOption: this.handleDeleteSingleOption
       }), /*#__PURE__*/React.createElement(AddOption, {
         handleAddOption: this.handleAddOption
       }));
@@ -132,14 +145,19 @@ var Options = function Options(props) {
   }, "Remove All"), props.options.map(function (option) {
     return /*#__PURE__*/React.createElement(Option, {
       key: option,
-      optionText: option
+      optionText: option,
+      handleDeleteSingleOption: props.handleDeleteSingleOption
     });
   }));
 }; //function component
 
 
 var Option = function Option(props) {
-  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", null, props.optionText));
+  return /*#__PURE__*/React.createElement("div", null, props.optionText, /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick(e) {
+      props.handleDeleteSingleOption(props.optionText);
+    }
+  }, "Remove"));
 }; //class component
 
 
@@ -168,7 +186,7 @@ var AddOption = /*#__PURE__*/function (_React$Component2) {
       var option = e.target.elements.option.value.trim();
       var error = this.props.handleAddOption(option);
       e.target.elements.option.value = '';
-      this.state(function () {
+      this.setState(function () {
         return {
           error: error
         };

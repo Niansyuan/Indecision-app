@@ -6,6 +6,7 @@
 div {
     margin: 10px;
     color:brown;
+    font-family: 'Oswald', sans-serif;
 }
 
 h1 {
@@ -18,7 +19,7 @@ h3 {
     margin: 0px;
     font-family: 'Oswald', sans-serif;
 }
-p {
+span {
     margin: 0px;
     font-family: 'Oswald', sans-serif;
 }
@@ -26,11 +27,7 @@ p {
     color:red;
     margin-top: 5px;
 }
-span {
-    display: grid;
-    
-    grid-template-columns: 10% 10% 10%;
-}
+
 button {
     color:rgb(255, 228, 194);
     margin-top: 5px;

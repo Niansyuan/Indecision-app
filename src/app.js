@@ -5,6 +5,7 @@ class IndecisionApp extends React.Component {
         this.handleDeleteOptions=this.handleDeleteOptions.bind(this)
         this.handlePick=this.handlePick.bind(this)
         this.handleAddOption=this.handleAddOption.bind(this)
+        this.handleDeleteSingleOption=this.handleDeleteSingleOption.bind(this)
         this.state={
             options:props.options //來自下方的IndecisionApp.defaultProps
         }
@@ -13,7 +14,11 @@ class IndecisionApp extends React.Component {
         // 進階語法:用大括號將內容括起來，返回一個object的表示法
         this.setState(()=>({options:[]}))
     }
-
+    handleDeleteSingleOption(optionToRemove){
+        this.setState((prevState)=>({
+            options:prevState.options.filter((option)=> optionToRemove !== option)
+        }))
+    }
     handlePick(){
         this.setState(()=>{
             if(this.state.options.length>0){
@@ -34,9 +39,9 @@ class IndecisionApp extends React.Component {
         }
         this.setState((prevState)=>{
             return {
-                options:prevState.options.concat[option]
+                options:prevState.options.concat([option])
             }
-        }) 
+        })
     }
 
     render() {
@@ -54,6 +59,7 @@ class IndecisionApp extends React.Component {
                 <Options 
                     options={this.state.options}
                     handleDeleteOptions={this.handleDeleteOptions}
+                    handleDeleteSingleOption={this.handleDeleteSingleOption}
                 />
                 <AddOption 
                 handleAddOption={this.handleAddOption} 
@@ -97,12 +103,18 @@ const Options=(props)=>{
     return (
         <div>
             <button
-            onClick={props.handleDeleteOptions}
+                onClick={props.handleDeleteOptions}
             >
                 Remove All
             </button>
             {
-                props.options.map((option)=><Option key={option} optionText={option}/>)
+                props.options.map((option)=>(
+                    <Option 
+                        key={option} 
+                        optionText={option}
+                        handleDeleteSingleOption={props.handleDeleteSingleOption}
+                    />
+                ))
             }
         </div>
     )
@@ -112,7 +124,14 @@ const Options=(props)=>{
 const Option=(props)=>{
     return (
         <div>
-            <p>{props.optionText}</p>
+            {props.optionText}
+            <button
+                onClick={(e)=>{
+                    props.handleDeleteSingleOption(props.optionText)
+                }}
+            >
+                Remove
+            </button>
         </div>
     )
 }
@@ -133,7 +152,7 @@ class AddOption extends React.Component{
         const error=this.props.handleAddOption(option)
         e.target.elements.option.value=''
         
-        this.state(()=>({error}))
+        this.setState(()=>({error}))
     }
 
     render(){
