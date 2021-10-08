@@ -6,7 +6,7 @@ class IndecisionApp extends React.Component {
         this.handlePick=this.handlePick.bind(this)
         this.handleAddOption=this.handleAddOption.bind(this)
         this.state={
-            options:[]
+            options:props.options //來自下方的IndecisionApp.defaultProps
         }
     }
     handleDeleteOptions(){
@@ -66,6 +66,11 @@ class IndecisionApp extends React.Component {
         )
     }
 }
+// Default props value
+IndecisionApp.defaultProps={
+    options:[]
+}
+
 //function component 
 //(當內容沒有太複雜時可以選用function component，會比class component快速)
 const Header=(props)=>{

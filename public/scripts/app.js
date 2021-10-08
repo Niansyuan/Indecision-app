@@ -38,7 +38,8 @@ var IndecisionApp = /*#__PURE__*/function (_React$Component) {
     _this.handlePick = _this.handlePick.bind(_assertThisInitialized(_this));
     _this.handleAddOption = _this.handleAddOption.bind(_assertThisInitialized(_this));
     _this.state = {
-      options: []
+      options: props.options //來自下方的IndecisionApp.defaultProps
+
     };
     return _this;
   }
@@ -103,9 +104,13 @@ var IndecisionApp = /*#__PURE__*/function (_React$Component) {
   }]);
 
   return IndecisionApp;
-}(React.Component); //function component 
-//(當內容沒有太複雜時可以選用function component，會比class component快速)
+}(React.Component); // Default props value
 
+
+IndecisionApp.defaultProps = {
+  options: []
+}; //function component 
+//(當內容沒有太複雜時可以選用function component，會比class component快速)
 
 var Header = function Header(props) {
   return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", null, props.title), /*#__PURE__*/React.createElement("h3", null, props.subtitle));
