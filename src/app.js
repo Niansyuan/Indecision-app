@@ -48,7 +48,7 @@ class IndecisionApp extends React.Component {
         const title='Indecision'
         const subtitle='Let computer make decision for you'
         return (
-            <div>
+            <div className='wrapper'>
                 <Header 
                 title={title} subtitle={subtitle}
                 />
@@ -77,7 +77,7 @@ IndecisionApp.defaultProps={
 //(當內容沒有太複雜時可以選用function component，會比class component快速)
 const Header=(props)=>{
     return (
-        <div>
+        <div className='Header'>
             <h1>{props.title}</h1>
             <h3>{props.subtitle}</h3>
         </div>
@@ -87,7 +87,7 @@ const Header=(props)=>{
 //function componet
 const Action=(props)=>{
     return (
-        <div>
+        <div className='Action'>
             <button
             onClick={props.handlePick}
             disabled={!props.hasOptions}
@@ -101,7 +101,7 @@ const Action=(props)=>{
 //function component
 const Options=(props)=>{
     return (
-        <div>
+        <div className='Options'>
             <button
                 onClick={props.handleDeleteOptions}
             >
@@ -123,8 +123,8 @@ const Options=(props)=>{
 //function component
 const Option=(props)=>{
     return (
-        <div>
-            {props.optionText}
+        <div className='Option'>
+            <span>{props.optionText}</span>
             <button
                 onClick={(e)=>{
                     props.handleDeleteSingleOption(props.optionText)
@@ -157,7 +157,7 @@ class AddOption extends React.Component{
 
     render(){
         return (
-            <div>
+            <div className='AddOption'>
                 <form onSubmit={this.handleAddOption}>
                     <input type='text' name='option' autocomplete='off'></input>
                     <button>Add option</button>

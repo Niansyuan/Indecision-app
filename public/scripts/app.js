@@ -101,7 +101,9 @@ var IndecisionApp = /*#__PURE__*/function (_React$Component) {
     value: function render() {
       var title = 'Indecision';
       var subtitle = 'Let computer make decision for you';
-      return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Header, {
+      return /*#__PURE__*/React.createElement("div", {
+        className: "wrapper"
+      }, /*#__PURE__*/React.createElement(Header, {
         title: title,
         subtitle: subtitle
       }), /*#__PURE__*/React.createElement(Action, {
@@ -127,12 +129,16 @@ IndecisionApp.defaultProps = {
 //(當內容沒有太複雜時可以選用function component，會比class component快速)
 
 var Header = function Header(props) {
-  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", null, props.title), /*#__PURE__*/React.createElement("h3", null, props.subtitle));
+  return /*#__PURE__*/React.createElement("div", {
+    className: "Header"
+  }, /*#__PURE__*/React.createElement("h1", null, props.title), /*#__PURE__*/React.createElement("h3", null, props.subtitle));
 }; //function componet
 
 
 var Action = function Action(props) {
-  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("button", {
+  return /*#__PURE__*/React.createElement("div", {
+    className: "Action"
+  }, /*#__PURE__*/React.createElement("button", {
     onClick: props.handlePick,
     disabled: !props.hasOptions
   }, "Pick one"));
@@ -140,7 +146,9 @@ var Action = function Action(props) {
 
 
 var Options = function Options(props) {
-  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("button", {
+  return /*#__PURE__*/React.createElement("div", {
+    className: "Options"
+  }, /*#__PURE__*/React.createElement("button", {
     onClick: props.handleDeleteOptions
   }, "Remove All"), props.options.map(function (option) {
     return /*#__PURE__*/React.createElement(Option, {
@@ -153,7 +161,9 @@ var Options = function Options(props) {
 
 
 var Option = function Option(props) {
-  return /*#__PURE__*/React.createElement("div", null, props.optionText, /*#__PURE__*/React.createElement("button", {
+  return /*#__PURE__*/React.createElement("div", {
+    className: "Option"
+  }, /*#__PURE__*/React.createElement("span", null, props.optionText), /*#__PURE__*/React.createElement("button", {
     onClick: function onClick(e) {
       props.handleDeleteSingleOption(props.optionText);
     }
@@ -195,7 +205,9 @@ var AddOption = /*#__PURE__*/function (_React$Component2) {
   }, {
     key: "render",
     value: function render() {
-      return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("form", {
+      return /*#__PURE__*/React.createElement("div", {
+        className: "AddOption"
+      }, /*#__PURE__*/React.createElement("form", {
         onSubmit: this.handleAddOption
       }, /*#__PURE__*/React.createElement("input", {
         type: "text",
