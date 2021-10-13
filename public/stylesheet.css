@@ -48,6 +48,7 @@
     background-color: rosybrown;
     text-align: center;
     margin-top: 10px;
+    margin-left: 10px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -85,18 +86,20 @@
     color:rgb(129, 92, 92);
     align-self: center;
 }
+.Option>button:hover {
+    color: rgb(97, 50, 50);
+}
 .Option>span {
     padding:15px 10px;
 }
 
-#error {
-    font-size: 14px;
-}
-
 .AddOption {
+    font-size: 14px;
+    color: white;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
+    flex-wrap: wrap;
     height: 50px;
 }
 .AddOption>form>input {
@@ -109,11 +112,13 @@
     border-radius: 2px;
 }
 .AddOption>form>button {
-    background-color: whitesmoke;
+    background-color: rgb(230, 229, 229);
     border: none;
     border-radius: 2px;
     font-size: 20px;
     width: auto;
     height: 30px;
 }
-
+.AddOption>form>button:hover {
+    background-color: rgb(255, 255, 255);
+}

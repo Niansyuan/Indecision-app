@@ -7,9 +7,33 @@ class IndecisionApp extends React.Component {
         this.handleAddOption=this.handleAddOption.bind(this)
         this.handleDeleteSingleOption=this.handleDeleteSingleOption.bind(this)
         this.state={
-            options:props.options //來自下方的IndecisionApp.defaultProps
+            options:[]
         }
     }
+
+    componentDidMount(){ 
+        try{
+            const json=localStorage.getItem('options')
+            const options=JSON.parse(json)
+            if(options){
+                this.setState(()=>({options}))
+            }
+        }catch(e){
+
+        }
+    }
+
+    componentDidUpdate(prevProps,prevState){ //prevProps要留著，不然會讀不到this.state.options
+        if(prevState.options.length !== this.state.options.length){
+            const json=JSON.stringify(this.state.options)
+            localStorage.setItem('options',json)  //setItem(key,value)
+        }
+    }
+
+    componentWillUnmount(){
+        console.log('unmount')
+    }
+
     handleDeleteOptions(){
         // 進階語法:用大括號將內容括起來，返回一個object的表示法
         this.setState(()=>({options:[]}))
@@ -68,10 +92,6 @@ class IndecisionApp extends React.Component {
         )
     }
 }
-// Default props value
-IndecisionApp.defaultProps={
-    options:[]
-}
 
 //function component 
 //(當內容沒有太複雜時可以選用function component，會比class component快速)
@@ -107,6 +127,9 @@ const Options=(props)=>{
             >
                 Remove All
             </button>
+            {
+                props.options.length === 0 && <p>Please add some option to get started !</p>
+            }
             {
                 props.options.map((option)=>(
                     <Option 

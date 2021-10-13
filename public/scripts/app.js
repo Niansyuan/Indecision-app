@@ -39,13 +39,42 @@ var IndecisionApp = /*#__PURE__*/function (_React$Component) {
     _this.handleAddOption = _this.handleAddOption.bind(_assertThisInitialized(_this));
     _this.handleDeleteSingleOption = _this.handleDeleteSingleOption.bind(_assertThisInitialized(_this));
     _this.state = {
-      options: props.options //來自下方的IndecisionApp.defaultProps
-
+      options: []
     };
     return _this;
   }
 
   _createClass(IndecisionApp, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      try {
+        var json = localStorage.getItem('options');
+        var options = JSON.parse(json);
+
+        if (options) {
+          this.setState(function () {
+            return {
+              options: options
+            };
+          });
+        }
+      } catch (e) {}
+    }
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevProps, prevState) {
+      //prevProps要留著，不然會讀不到this.state.options
+      if (prevState.options.length !== this.state.options.length) {
+        var json = JSON.stringify(this.state.options);
+        localStorage.setItem('options', json); //setItem(key,value)
+      }
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      console.log('unmount');
+    }
+  }, {
     key: "handleDeleteOptions",
     value: function handleDeleteOptions() {
       // 進階語法:用大括號將內容括起來，返回一個object的表示法
@@ -120,13 +149,9 @@ var IndecisionApp = /*#__PURE__*/function (_React$Component) {
   }]);
 
   return IndecisionApp;
-}(React.Component); // Default props value
-
-
-IndecisionApp.defaultProps = {
-  options: []
-}; //function component 
+}(React.Component); //function component 
 //(當內容沒有太複雜時可以選用function component，會比class component快速)
+
 
 var Header = function Header(props) {
   return /*#__PURE__*/React.createElement("div", {
@@ -150,7 +175,7 @@ var Options = function Options(props) {
     className: "Options"
   }, /*#__PURE__*/React.createElement("button", {
     onClick: props.handleDeleteOptions
-  }, "Remove All"), props.options.map(function (option) {
+  }, "Remove All"), props.options.length === 0 && /*#__PURE__*/React.createElement("p", null, "Please add some option to get started !"), props.options.map(function (option) {
     return /*#__PURE__*/React.createElement(Option, {
       key: option,
       optionText: option,
