@@ -1,3 +1,6 @@
+import React from 'react'
+import ReactDOM from 'react-dom'
+
 //class component
 class IndecisionApp extends React.Component {
     constructor(props){
