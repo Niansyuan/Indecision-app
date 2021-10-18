@@ -14,5 +14,11 @@ module.exports={
             test: /\.js$/,
             exclude: /node_modules/
         }]
+    },
+    devtool: 'cheap-module-source-map',
+    devServer:{
+        static: {
+            directory: path.join(__dirname, 'public'),
+          },
     }
 }
