@@ -122,3 +122,28 @@
 .AddOption>form>button:hover {
     background-color: rgb(255, 255, 255);
 }
+
+.ReactModal__Body--open {
+    font-family: 'Titillium Web', sans-serif;
+    background-color: rgb(230, 180, 180,0.75);
+    top: 50%;
+    bottom: 50%;
+    left: auto;
+    right: auto;
+    text-align: center;
+    font-size: 50px;
+}
+.ReactModal__Content--after-open {
+    margin: auto;
+}
+.ReactModal__Overlay>h3 {
+    margin: 6%;
+    font-weight: 1000;
+    font-size: 40px;
+    color: rgb(71, 59, 59);
+}
+.ReactModal__Overlay>p {
+    font-weight: 800;
+    font-size: 70px;
+    color: rgb(107, 82, 82);
+}

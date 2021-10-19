@@ -14,7 +14,7 @@
   "scripts": {
     "serve": "live-server public/",
     "build": "webpack",
-    "dev-server":"webpack-dev-server"
+    "dev-server": "webpack-dev-server"
   },
   "dependencies": {
     "babel-cli": "^6.26.0",
@@ -27,6 +27,7 @@
     "live-server": "^1.2.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-modal": "^3.14.3",
     "validator": "^13.6.0",
     "webpack": "^5.58.2",
     "webpack-dev-server": "^4.3.1"
