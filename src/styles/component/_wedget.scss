@@ -1,0 +1,19 @@
+.widget {
+    background:$widget-theme-color; 
+    margin-bottom: $xl-size;
+}
+
+.widget__message {
+    text-align: center;
+    padding: $xl-size;
+    color: $font-color-dark;
+}
+
+.widget-header {
+    background: $widget-header-color;
+    color:$font-color-light;
+    padding: $s-size;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

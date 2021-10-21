@@ -1,0 +1,50 @@
+//big-button
+.big-button {
+    color: $font-color-light;
+    background: $button-color;
+    border:none;
+    border-bottom: .6rem solid darken($button-color,10%);
+    font-weight: 800;
+    font-size: $l-size;
+    margin-bottom: $m-size;
+    padding: $m-size;
+    width: 100%;
+}
+.big-button:disabled {
+    opacity: .5;
+}
+.big-button:hover {
+    background: lighten($button-color, 10%);
+}
+@media(min-width:$desktop-breakpoint){
+    .big-button {
+        margin-bottom: $xl-size;
+    }
+}
+
+//buttion
+.button {
+    color: $font-color-light;
+    background: $button-color;
+    border:none;
+    border-bottom: .6rem solid darken($button-color,10%);
+    font-weight: 500;
+    font-size: $m-size;
+    padding: $s-size;
+}
+.button:hover {
+    background: lighten($button-color, 10%);
+}
+
+.button__link {
+    color: $font-color-light;
+    font-weight: 500;
+    font-size: $m-size;
+    background:none;
+    border:none;
+    padding: 0;
+}
+
+.button__link:hover {
+    color: darken($font-color-light,20%);
+}

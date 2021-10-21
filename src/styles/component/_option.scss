@@ -1,0 +1,14 @@
+.option {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding:$m-size $m-size;
+    border-bottom: 2px solid lighten($widget-theme-color,5%);
+}
+
+.option__text {
+    color:$font-color-dark;
+    font-weight: 500;
+    font-size: $m-size;
+    word-break: break-all;
+}
