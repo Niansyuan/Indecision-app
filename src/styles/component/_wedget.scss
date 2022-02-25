@@ -16,4 +16,14 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    position: relative;
+}
+
+.widget-chance {
+    display: flex;
+    flex-direction: column;
+    @media(min-width: $desktop-breakpoint){
+        position: absolute;
+        left: 365px;
+    };
 }

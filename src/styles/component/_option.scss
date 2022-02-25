@@ -4,11 +4,32 @@
     justify-content: space-between;
     padding:$m-size $m-size;
     border-bottom: 2px solid lighten($widget-theme-color,5%);
+    position: relative;
 }
 
 .option__text {
+    display: flex;
+    align-items: center;
     color:$font-color-dark;
     font-weight: 500;
     font-size: $m-size;
     word-break: break-all;
+    width: 100px;
+    @media(min-width: $desktop-breakpoint){
+        width: 300px;
+    }
+}
+
+.option__text--chance {
+    color:$font-color-dark;
+}
+
+.option-chance {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    @media(min-width: $desktop-breakpoint){
+        position: absolute;
+        left: 330px;
+    }
 }

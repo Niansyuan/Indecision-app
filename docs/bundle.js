@@ -170,6 +170,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _OptionModal__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./OptionModal */ "./src/component/OptionModal.js");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -223,8 +237,12 @@ var IndecisionApp = /*#__PURE__*/function (_React$Component) {
     _this.handlePick = _this.handlePick.bind(_assertThisInitialized(_this));
     _this.handleAddOption = _this.handleAddOption.bind(_assertThisInitialized(_this));
     _this.handleDeleteSingleOption = _this.handleDeleteSingleOption.bind(_assertThisInitialized(_this));
+    _this.handleAddChance = _this.handleAddChance.bind(_assertThisInitialized(_this));
+    _this.handleMinusChance = _this.handleMinusChance.bind(_assertThisInitialized(_this)); // this.handleMinusChance = this.handleMinusChance.bind(this)
+
     _this.state = {
       options: [],
+      optionsAfterChanceUp: [],
       selectedOption: undefined
     };
     return _this;
@@ -235,12 +253,22 @@ var IndecisionApp = /*#__PURE__*/function (_React$Component) {
     value: function componentDidMount() {
       try {
         var json = localStorage.getItem('options');
+        var json2 = localStorage.getItem('optionsAfterChanceUp');
         var options = JSON.parse(json);
+        var optionsAfterChanceUp = JSON.parse(json2);
 
         if (options) {
           this.setState(function () {
             return {
               options: options
+            };
+          });
+        }
+
+        if (optionsAfterChanceUp) {
+          this.setState(function () {
+            return {
+              optionsAfterChanceUp: optionsAfterChanceUp
             };
           });
         }
@@ -253,6 +281,15 @@ var IndecisionApp = /*#__PURE__*/function (_React$Component) {
       if (prevState.options.length !== this.state.options.length) {
         var json = JSON.stringify(this.state.options);
         localStorage.setItem('options', json); //setItem(key,value)
+      } //當handleAddChance與handleMinusChance作用時，chance會改變(等於state中的props，所以用prevProps參數)，會啟動componenetDidUpdate，讓optionsAfterChanceUp結果儲存在localStorage中
+
+
+      if (prevProps.options !== this.state.options) {
+        var _json = JSON.stringify(this.state.options);
+
+        var json2 = JSON.stringify(this.state.optionsAfterChanceUp);
+        localStorage.setItem('options', _json);
+        localStorage.setItem('optionsAfterChanceUp', json2);
       }
     }
   }, {
@@ -266,7 +303,8 @@ var IndecisionApp = /*#__PURE__*/function (_React$Component) {
       // 進階語法:用大括號將內容括起來，返回一個object的表示法
       this.setState(function () {
         return {
-          options: []
+          options: [],
+          optionsAfterChanceUp: []
         };
       });
     }
@@ -276,6 +314,9 @@ var IndecisionApp = /*#__PURE__*/function (_React$Component) {
       this.setState(function (prevState) {
         return {
           options: prevState.options.filter(function (option) {
+            return optionToRemove !== option[0];
+          }),
+          optionsAfterChanceUp: prevState.optionsAfterChanceUp.filter(function (option) {
             return optionToRemove !== option;
           })
         };
@@ -286,10 +327,10 @@ var IndecisionApp = /*#__PURE__*/function (_React$Component) {
     value: function handlePick() {
       var _this2 = this;
 
-      var randomNum = Math.floor(Math.random() * this.state.options.length);
+      var randomNum = Math.floor(Math.random() * this.state.optionsAfterChanceUp.length);
       this.setState(function () {
         return {
-          selectedOption: _this2.state.options[randomNum]
+          selectedOption: _this2.state.optionsAfterChanceUp[randomNum]
         };
       });
     }
@@ -298,14 +339,91 @@ var IndecisionApp = /*#__PURE__*/function (_React$Component) {
     value: function handleAddOption(option) {
       if (!option) {
         return 'Enter vaild value';
-      } else if (this.state.options.indexOf(option) > -1) {
+      } else if (this.state.options.map(function (option) {
+        return option[0];
+      }).indexOf(option) > -1) {
         return 'This option is already exist';
       }
 
-      this.setState(function (prevState) {
+      this.setState(function (prevState, chance) {
         return {
-          options: prevState.options.concat([option])
+          options: prevState.options.concat([[option, chance = 1]]),
+          //讓AddOption動作把option同時也加入optionsAfterChanceUp中
+          //透透過map((option)=>option[0]))，讓我們可以只加入option[0]，而非[option,chance]
+          optionsAfterChanceUp: [].concat(_toConsumableArray(prevState.options.map(function (option) {
+            return option[0];
+          })), [option])
         };
+      });
+    }
+  }, {
+    key: "handleAddChance",
+    value: function handleAddChance(optionToChanceUp) {
+      var _this3 = this;
+
+      this.setState(function (prevState) {
+        //透過for of迴圈檢查options中的option
+        var _iterator = _createForOfIteratorHelper(prevState.options),
+            _step;
+
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var option = _step.value;
+
+            // 1.如果這個option中含有我們目標增加的option
+            if (option.includes(optionToChanceUp)) {
+              // 2.就對這個option的chance+1
+              option[1] += 1; // 3.把這個option push到所設置的另一個array中
+
+              _this3.state.optionsAfterChanceUp.push(optionToChanceUp); // 4.回傳新增的option chance
+
+
+              return option[1];
+            } // console.log(option[1]) //會印出chance
+            // console.log(prevState.options) //會返回已新增後的options ex.[['apple',1],['banana',3]]
+
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
+
+        ;
+      });
+    }
+  }, {
+    key: "handleMinusChance",
+    value: function handleMinusChance(optionToChanceDown) {
+      var _this4 = this;
+
+      this.setState(function (prevState) {
+        //原理跟handleAddChance一樣
+        var _iterator2 = _createForOfIteratorHelper(prevState.options),
+            _step2;
+
+        try {
+          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+            var option = _step2.value;
+
+            //但為了不讓chance小於1，所以設置條件chance>1
+            if (option[1] > 1) {
+              if (option.includes(optionToChanceDown)) {
+                _this4.state.optionsAfterChanceUp.splice(_this4.state.optionsAfterChanceUp.indexOf(optionToChanceDown), 1);
+
+                console.log(_this4.state.optionsAfterChanceUp);
+                option[1] -= 1;
+                return option[1];
+              }
+            }
+          }
+        } catch (err) {
+          _iterator2.e(err);
+        } finally {
+          _iterator2.f();
+        }
+
+        ;
       });
     }
   }, {
@@ -328,7 +446,9 @@ var IndecisionApp = /*#__PURE__*/function (_React$Component) {
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_Options__WEBPACK_IMPORTED_MODULE_2__["default"], {
         options: this.state.options,
         handleDeleteOptions: this.handleDeleteOptions,
-        handleDeleteSingleOption: this.handleDeleteSingleOption
+        handleDeleteSingleOption: this.handleDeleteSingleOption,
+        handleAddChance: this.handleAddChance,
+        handleMinusChance: this.handleMinusChance
       }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_AddOption__WEBPACK_IMPORTED_MODULE_1__["default"], {
         handleAddOption: this.handleAddOption
       }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_OptionModal__WEBPACK_IMPORTED_MODULE_5__["default"], {
@@ -364,9 +484,23 @@ var Option = function Option(props) {
     className: "option"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("p", {
     className: "option__text"
-  }, props.count, ".", props.optionText), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
+  }, props.count, ".", props.optionText), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: "option-chance"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
+    className: "button__link chance",
+    onClick: function onClick() {
+      props.handleMinusChance(props.optionText);
+    }
+  }, "-"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("p", {
+    className: "option__text--chance"
+  }, props.chance), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
+    className: "button__link chance",
+    onClick: function onClick() {
+      props.handleAddChance(props.optionText);
+    }
+  }, "+")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
     className: "button__link",
-    onClick: function onClick(e) {
+    onClick: function onClick() {
       props.handleDeleteSingleOption(props.optionText);
     }
   }, "Remove"));
@@ -435,7 +569,9 @@ __webpack_require__.r(__webpack_exports__);
 var Options = function Options(props) {
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
     className: "widget-header"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("h3", null, "Your options"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("h3", null, "Your options"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("h3", {
+    className: "widget-chance"
+  }, "Chance"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
     className: "button__link",
     onClick: props.handleDeleteOptions
   }, "Remove All")), props.options.length === 0 && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("p", {
@@ -443,9 +579,12 @@ var Options = function Options(props) {
   }, "Please add some option to get started !"), props.options.map(function (option, Index) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_Option__WEBPACK_IMPORTED_MODULE_1__["default"], {
       count: Index + 1,
-      key: option,
-      optionText: option,
-      handleDeleteSingleOption: props.handleDeleteSingleOption
+      key: option[0],
+      optionText: option[0],
+      handleDeleteSingleOption: props.handleDeleteSingleOption,
+      handleAddChance: props.handleAddChance,
+      handleMinusChance: props.handleMinusChance,
+      chance: option[1]
     });
   }));
 };
@@ -477,7 +616,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 ___CSS_LOADER_EXPORT___.i(_node_modules_css_loader_dist_cjs_js_reset_css__WEBPACK_IMPORTED_MODULE_2__["default"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "html {\n  font-size: 62.5%; }\n\nbody {\n  font-family: \"Courier New\", Courier, monospace;\n  font-size: 1.6rem;\n  background-color: #ffe2bc; }\n\nbutton {\n  font-family: \"Courier New\", Courier, monospace;\n  cursor: pointer; }\n\nbutton:disabled {\n  cursor: default; }\n\n.header {\n  background-color: brown;\n  color: burlywood;\n  margin-bottom: 1.6rem;\n  padding: 1.6rem 0; }\n\n.header__title {\n  font-size: 3.2rem;\n  margin: 0rem; }\n\n.header__subtitle {\n  font-size: 1.6rem;\n  font-weight: 500;\n  margin: 0; }\n\n@media (min-width: 45rem) {\n  .header {\n    margin-bottom: 4.8rem; } }\n\n.container {\n  max-width: 60rem;\n  margin: 0 auto;\n  padding: 0 1.6rem; }\n\n.big-button {\n  color: burlywood;\n  background: #5f1b1b;\n  border: none;\n  border-bottom: 0.6rem solid #371010;\n  font-weight: 800;\n  font-size: 3.2rem;\n  margin-bottom: 1.6rem;\n  padding: 1.6rem;\n  width: 100%; }\n\n.big-button:disabled {\n  opacity: .5; }\n\n.big-button:hover {\n  background: #872626; }\n\n@media (min-width: 45rem) {\n  .big-button {\n    margin-bottom: 4.8rem; } }\n\n.button {\n  color: burlywood;\n  background: #5f1b1b;\n  border: none;\n  border-bottom: 0.6rem solid #371010;\n  font-weight: 500;\n  font-size: 1.6rem;\n  padding: 1.2rem; }\n\n.button:hover {\n  background: #872626; }\n\n.button__link {\n  color: burlywood;\n  font-weight: 500;\n  font-size: 1.6rem;\n  background: none;\n  border: none;\n  padding: 0; }\n\n.button__link:hover {\n  color: #c88937; }\n\n.option {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  padding: 1.6rem 1.6rem;\n  border-bottom: 2px solid #faddb8; }\n\n.option__text {\n  color: brown;\n  font-weight: 500;\n  font-size: 1.6rem;\n  word-break: break-all; }\n\n.addOption-error {\n  color: brown;\n  font-weight: 600;\n  font-style: italic;\n  padding: 0 3.2rem;\n  margin: 1.2rem 0 0 0; }\n\n.addOption {\n  display: flex;\n  flex-direction: column;\n  padding: 1.6rem; }\n\n.addOption__input {\n  color: brown;\n  padding: 1.2rem;\n  flex-grow: 1;\n  border: 2px solid #7c2020;\n  border-radius: 1.2rem;\n  margin: 0 0 1.2rem 0;\n  font-size: 1.6rem;\n  background: #fce9d0; }\n\n@media (min-width: 45rem) {\n  .addOption {\n    flex-direction: row; }\n  .addOption__input {\n    margin: 0 1.2rem 0 0; } }\n\n.widget {\n  background: #f8d2a0;\n  margin-bottom: 4.8rem; }\n\n.widget__message {\n  text-align: center;\n  padding: 4.8rem;\n  color: brown; }\n\n.widget-header {\n  background: #a5322a;\n  color: burlywood;\n  padding: 1.2rem;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between; }\n\n.ReactModalPortal > div {\n  opacity: 0; }\n\n.ReactModalPortal .ReactModal__Overlay {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  transition: opacity 200ms ease-in-out; }\n\n.ReactModalPortal .ReactModal__Overlay--after-open {\n  opacity: 1; }\n\n.ReactModalPortal .ReactModal__Overlay--before-close {\n  opacity: 0; }\n\n.modal {\n  background: brown;\n  color: burlywood;\n  max-width: 30rem;\n  outline: none;\n  text-align: center;\n  padding: 3.2rem; }\n\n.modal__title {\n  font-size: 1.6rem;\n  font-weight: 600;\n  margin-bottom: 3.2rem; }\n\n.modal__body {\n  font-size: 3.2rem;\n  font-weight: 600;\n  margin-bottom: 3.2rem;\n  word-break: break-all; }\n\n.modal__button {\n  background: #f8d2a0;\n  border-radius: 3.2rem;\n  border: 2px solid #541515;\n  font-size: 1.6rem;\n  color: brown;\n  font-weight: 700; }\n", "",{"version":3,"sources":["webpack://./src/styles/base/_base.scss","webpack://./src/styles/base/setting.scss","webpack://./src/styles/component/_header.scss","webpack://./src/styles/component/_container.scss","webpack://./src/styles/component/_button.scss","webpack://./src/styles/component/_option.scss","webpack://./src/styles/component/add-option.scss","webpack://./src/styles/component/_wedget.scss","webpack://./src/styles/component/_modal.scss"],"names":[],"mappings":"AAAA;EACI,gBAAgB,EAAA;;AAGpB;EACI,8CCWmC;EDVnC,iBCKU;EDJV,yBCD2B,EAAA;;ADI/B;EACI,8CCKmC;EDJnC,eAAe,EAAA;;AAGnB;EACI,eAAe,EAAA;;AEhBnB;EACI,uBDAc;ECCd,gBDAuB;ECCvB,qBDQU;ECPV,iBAAkB,EAAA;;AAEtB;EACI,iBDKU;ECJV,YAAW,EAAA;;AAEf;EACI,iBDAU;ECCV,gBAAgB;EAChB,SAAQ,EAAA;;AAEZ;EACI;IACI,qBDJO,EAAA,ECKV;;AClBL;EACI,gBAAgB;EAChB,cAAa;EACb,iBFQU,EAAA;;AGVd;EACI,gBHAuB;EGCvB,mBHIyB;EGHzB,YAAW;EACX,mCAAoD;EACpD,gBAAgB;EAChB,iBHKU;EGJV,qBHGU;EGFV,eHEU;EGDV,WAAW,EAAA;;AAEf;EACI,WAAW,EAAA;;AAEf;EACI,mBAAuC,EAAA;;AAE3C;EACI;IACI,qBHPO,EAAA,EGQV;;AAIL;EACI,gBHxBuB;EGyBvB,mBHpByB;EGqBzB,YAAW;EACX,mCAAoD;EACpD,gBAAgB;EAChB,iBHpBU;EGqBV,eHtBU,EAAA;;AGwBd;EACI,mBAAuC,EAAA;;AAG3C;EACI,gBHrCuB;EGsCvB,gBAAgB;EAChB,iBH9BU;EG+BV,gBAAe;EACf,YAAW;EACX,UAAU,EAAA;;AAGd;EACI,cAAoC,EAAA;;AChDxC;EACI,aAAa;EACb,mBAAmB;EACnB,8BAA8B;EAC9B,sBJOU;EINV,gCAAwD,EAAA;;AAG5D;EACI,YJNkB;EIOlB,gBAAgB;EAChB,iBJAU;EICV,qBAAqB,EAAA;;ACZzB;EACI,YLEkB;EKDlB,gBAAgB;EAChB,kBAAiB;EACjB,iBLQU;EKPV,oBAAqB,EAAA;;AAEzB;EACI,aAAa;EACb,sBAAsB;EACtB,eLCU,EAAA;;AKCd;EACI,YLVkB;EKWlB,eLJU;EKKV,YAAY;EACZ,yBAA0C;EAC1C,qBLPU;EKQV,oBAAoB;EACpB,iBLRU;EKSV,mBAA4C,EAAA;;AAGhD;EACI;IACI,mBAAmB,EAAA;EAEvB;IACI,oBAAoB,EAAA,EACvB;;AC7BL;EACI,mBNIkC;EMHlC,qBNWW,EAAA;;AMRf;EACI,kBAAkB;EAClB,eNMW;EMLX,YNLkB,EAAA;;AMQtB;EACI,mBNRiC;EMSjC,gBNXuB;EMYvB,eNJU;EMKV,aAAa;EACb,mBAAmB;EACnB,8BAA8B,EAAA;;ACjBlC;EACI,UAAU,EAAA;;AAEd;EACI,aAAa;EACb,mBAAmB;EACnB,uBAAuB;EACvB,qCAAqC,EAAA;;AAEzC;EACI,UAAU,EAAA;;AAEd;EACI,UAAU,EAAA;;AAEd;EACI,iBPfc;EOgBd,gBPfuB;EOgBvB,gBAAgB;EAChB,aAAa;EACb,kBAAkB;EAClB,ePTU,EAAA;;AOWd;EACI,iBPbU;EOcV,gBAAgB;EAChB,qBPdU,EAAA;;AOgBd;EACI,iBPjBU;EOkBV,gBAAgB;EAChB,qBPnBU;EOoBV,qBAAqB,EAAA;;AAEzB;EACI,mBP9BkC;EO+BlC,qBPxBU;EOyBV,yBAA2C;EAC3C,iBP3BU;EO4BV,YPpCkB;EOqClB,gBAAgB,EAAA","sourcesContent":["html {\r\n    font-size: 62.5%;\r\n}\r\n\r\nbody {\r\n    font-family: $font;\r\n    font-size:$m-size;\r\n    background-color: $body-color;\r\n}\r\n\r\nbutton {\r\n    font-family: $font;\r\n    cursor: pointer;\r\n}\r\n\r\nbutton:disabled {\r\n    cursor: default;\r\n}","//color\r\n$theme-color:brown;\r\n$font-color-light:burlywood;\r\n$font-color-dark:brown;\r\n$widget-header-color:rgb(165, 50, 42);\r\n$widget-theme-color:rgb(248, 210, 160);\r\n$body-color: rgb(255, 226, 188);\r\n$button-color:rgb(95, 27, 27);\r\n\r\n//space\r\n$s-size:1.2rem;\r\n$m-size:1.6rem;\r\n$l-size:3.2rem;\r\n$xl-size:4.8rem;\r\n\r\n//font family\r\n$font:'Courier New', Courier, monospace;\r\n\r\n//breakPoint\r\n$desktop-breakpoint:45rem;",".header {\r\n    background-color: $theme-color;\r\n    color: $font-color-light;\r\n    margin-bottom: $m-size;\r\n    padding: $m-size 0;\r\n}\r\n.header__title {\r\n    font-size: $l-size;\r\n    margin:0rem;\r\n}\r\n.header__subtitle {\r\n    font-size:$m-size;\r\n    font-weight: 500;\r\n    margin:0;\r\n}\r\n@media (min-width:$desktop-breakpoint){\r\n    .header {\r\n        margin-bottom: $xl-size;\r\n    }\r\n}",".container {\r\n    max-width: 60rem;\r\n    margin:0 auto; \r\n    padding: 0 $m-size;\r\n}","//big-button\r\n.big-button {\r\n    color: $font-color-light;\r\n    background: $button-color;\r\n    border:none;\r\n    border-bottom: .6rem solid darken($button-color,10%);\r\n    font-weight: 800;\r\n    font-size: $l-size;\r\n    margin-bottom: $m-size;\r\n    padding: $m-size;\r\n    width: 100%;\r\n}\r\n.big-button:disabled {\r\n    opacity: .5;\r\n}\r\n.big-button:hover {\r\n    background: lighten($button-color, 10%);\r\n}\r\n@media(min-width:$desktop-breakpoint){\r\n    .big-button {\r\n        margin-bottom: $xl-size;\r\n    }\r\n}\r\n\r\n//buttion\r\n.button {\r\n    color: $font-color-light;\r\n    background: $button-color;\r\n    border:none;\r\n    border-bottom: .6rem solid darken($button-color,10%);\r\n    font-weight: 500;\r\n    font-size: $m-size;\r\n    padding: $s-size;\r\n}\r\n.button:hover {\r\n    background: lighten($button-color, 10%);\r\n}\r\n\r\n.button__link {\r\n    color: $font-color-light;\r\n    font-weight: 500;\r\n    font-size: $m-size;\r\n    background:none;\r\n    border:none;\r\n    padding: 0;\r\n}\r\n\r\n.button__link:hover {\r\n    color: darken($font-color-light,20%);\r\n}",".option {\r\n    display: flex;\r\n    flex-direction: row;\r\n    justify-content: space-between;\r\n    padding:$m-size $m-size;\r\n    border-bottom: 2px solid lighten($widget-theme-color,5%);\r\n}\r\n\r\n.option__text {\r\n    color:$font-color-dark;\r\n    font-weight: 500;\r\n    font-size: $m-size;\r\n    word-break: break-all;\r\n}",".addOption-error {\r\n    color: $font-color-dark;\r\n    font-weight: 600;\r\n    font-style:italic;\r\n    padding: 0 $l-size;\r\n    margin: $s-size 0 0 0;\r\n}\r\n.addOption {\r\n    display: flex;\r\n    flex-direction: column;\r\n    padding:$m-size;\r\n}\r\n.addOption__input {\r\n    color: $font-color-dark;\r\n    padding: $s-size;\r\n    flex-grow: 1;\r\n    border: 2px solid darken($theme-color,10%);\r\n    border-radius: $s-size;\r\n    margin:0 0 $s-size 0;\r\n    font-size: $m-size;\r\n    background: lighten($widget-theme-color,10%);\r\n}\r\n\r\n@media(min-width:$desktop-breakpoint) {\r\n    .addOption {\r\n        flex-direction: row;\r\n    }\r\n    .addOption__input {\r\n        margin:0 $s-size 0 0;\r\n    }\r\n}",".widget {\r\n    background:$widget-theme-color; \r\n    margin-bottom: $xl-size;\r\n}\r\n\r\n.widget__message {\r\n    text-align: center;\r\n    padding: $xl-size;\r\n    color: $font-color-dark;\r\n}\r\n\r\n.widget-header {\r\n    background: $widget-header-color;\r\n    color:$font-color-light;\r\n    padding: $s-size;\r\n    display: flex;\r\n    flex-direction: row;\r\n    justify-content: space-between;\r\n}\r\n",".ReactModalPortal >div {\r\n    opacity: 0;\r\n}\r\n.ReactModalPortal .ReactModal__Overlay {\r\n    display: flex;\r\n    align-items: center;\r\n    justify-content: center;\r\n    transition: opacity 200ms ease-in-out;\r\n}\r\n.ReactModalPortal .ReactModal__Overlay--after-open {\r\n    opacity: 1;\r\n}\r\n.ReactModalPortal .ReactModal__Overlay--before-close {\r\n    opacity: 0;\r\n}\r\n.modal {\r\n    background: $theme-color;\r\n    color:$font-color-light;\r\n    max-width: 30rem;\r\n    outline: none;\r\n    text-align: center;\r\n    padding: $l-size;\r\n}\r\n.modal__title {\r\n    font-size: $m-size;\r\n    font-weight: 600;\r\n    margin-bottom: $l-size;\r\n}\r\n.modal__body {\r\n    font-size: $l-size;\r\n    font-weight: 600;\r\n    margin-bottom: $l-size;\r\n    word-break: break-all;\r\n}\r\n.modal__button {\r\n    background: $widget-theme-color;\r\n    border-radius: $l-size;\r\n    border: 2px solid darken($theme-color, 20%);\r\n    font-size: $m-size;\r\n    color: $font-color-dark;\r\n    font-weight: 700;\r\n}"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, "html {\n  font-size: 62.5%; }\n\nbody {\n  font-family: \"Courier New\", Courier, monospace;\n  font-size: 1.6rem;\n  background-color: #ffe2bc; }\n\nbutton {\n  font-family: \"Courier New\", Courier, monospace;\n  cursor: pointer; }\n\nbutton:disabled {\n  cursor: default; }\n\n.header {\n  background-color: brown;\n  color: burlywood;\n  margin-bottom: 1.6rem;\n  padding: 1.6rem 0; }\n\n.header__title {\n  font-size: 3.2rem;\n  margin: 0rem; }\n\n.header__subtitle {\n  font-size: 1.6rem;\n  font-weight: 500;\n  margin: 0; }\n\n@media (min-width: 45rem) {\n  .header {\n    margin-bottom: 4.8rem; } }\n\n.container {\n  max-width: 60rem;\n  margin: 0 auto;\n  padding: 0 1.6rem; }\n\n.big-button {\n  color: burlywood;\n  background: #5f1b1b;\n  border: none;\n  border-bottom: 0.6rem solid #371010;\n  font-weight: 800;\n  font-size: 3.2rem;\n  margin-bottom: 1.6rem;\n  padding: 1.6rem;\n  width: 100%; }\n\n.big-button:disabled {\n  opacity: .5; }\n\n.big-button:hover {\n  background: #872626; }\n\n@media (min-width: 45rem) {\n  .big-button {\n    margin-bottom: 4.8rem; } }\n\n.button {\n  color: burlywood;\n  background: #5f1b1b;\n  border: none;\n  border-bottom: 0.6rem solid #371010;\n  font-weight: 500;\n  font-size: 1.6rem;\n  padding: 1.2rem; }\n\n.button:hover {\n  background: #872626; }\n\n.button__link {\n  color: #db9a46;\n  font-weight: 500;\n  font-size: 1.6rem;\n  background: none;\n  border: none;\n  padding: 0; }\n\n.button__link:hover {\n  color: #9d661e; }\n\n.button__link.chance {\n  margin: 0 1.2rem; }\n  @media (min-width: 45rem) {\n    .button__link.chance {\n      padding: 0.2rem 1.2rem;\n      margin: 0 1.2rem;\n      border: 1px solid #9d661e;\n      border-radius: 200px; } }\n\n.option {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  padding: 1.6rem 1.6rem;\n  border-bottom: 2px solid #faddb8;\n  position: relative; }\n\n.option__text {\n  display: flex;\n  align-items: center;\n  color: brown;\n  font-weight: 500;\n  font-size: 1.6rem;\n  word-break: break-all;\n  width: 100px; }\n  @media (min-width: 45rem) {\n    .option__text {\n      width: 300px; } }\n\n.option__text--chance {\n  color: brown; }\n\n.option-chance {\n  display: flex;\n  flex-direction: row;\n  align-items: center; }\n  @media (min-width: 45rem) {\n    .option-chance {\n      position: absolute;\n      left: 330px; } }\n\n.addOption-error {\n  color: brown;\n  font-weight: 600;\n  font-style: italic;\n  padding: 0 3.2rem;\n  margin: 1.2rem 0 0 0; }\n\n.addOption {\n  display: flex;\n  flex-direction: column;\n  padding: 1.6rem; }\n\n.addOption__input {\n  color: brown;\n  padding: 1.2rem;\n  flex-grow: 1;\n  border: 2px solid #7c2020;\n  border-radius: 1.2rem;\n  margin: 0 0 1.2rem 0;\n  font-size: 1.6rem;\n  background: #fce9d0; }\n\n@media (min-width: 45rem) {\n  .addOption {\n    flex-direction: row; }\n  .addOption__input {\n    margin: 0 1.2rem 0 0; } }\n\n.widget {\n  background: #f8d2a0;\n  margin-bottom: 4.8rem; }\n\n.widget__message {\n  text-align: center;\n  padding: 4.8rem;\n  color: brown; }\n\n.widget-header {\n  background: #a5322a;\n  color: burlywood;\n  padding: 1.2rem;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  position: relative; }\n\n.widget-chance {\n  display: flex;\n  flex-direction: column; }\n  @media (min-width: 45rem) {\n    .widget-chance {\n      position: absolute;\n      left: 365px; } }\n\n.ReactModalPortal > div {\n  opacity: 0; }\n\n.ReactModalPortal .ReactModal__Overlay {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  transition: opacity 200ms ease-in-out; }\n\n.ReactModalPortal .ReactModal__Overlay--after-open {\n  opacity: 1; }\n\n.ReactModalPortal .ReactModal__Overlay--before-close {\n  opacity: 0; }\n\n.modal {\n  background: brown;\n  color: burlywood;\n  max-width: 30rem;\n  outline: none;\n  text-align: center;\n  padding: 3.2rem; }\n\n.modal__title {\n  font-size: 1.6rem;\n  font-weight: 600;\n  margin-bottom: 3.2rem; }\n\n.modal__body {\n  font-size: 3.2rem;\n  font-weight: 600;\n  margin-bottom: 3.2rem;\n  word-break: break-all; }\n\n.modal__button {\n  background: #f8d2a0;\n  border-radius: 3.2rem;\n  border: 2px solid #541515;\n  font-size: 1.6rem;\n  color: brown;\n  font-weight: 700; }\n", "",{"version":3,"sources":["webpack://./src/styles/base/_base.scss","webpack://./src/styles/base/setting.scss","webpack://./src/styles/component/_header.scss","webpack://./src/styles/component/_container.scss","webpack://./src/styles/component/_button.scss","webpack://./src/styles/component/_option.scss","webpack://./src/styles/component/add-option.scss","webpack://./src/styles/component/_wedget.scss","webpack://./src/styles/component/_modal.scss"],"names":[],"mappings":"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","sourcesContent":["html {\r\n    font-size: 62.5%;\r\n}\r\n\r\nbody {\r\n    font-family: $font;\r\n    font-size:$m-size;\r\n    background-color: $body-color;\r\n}\r\n\r\nbutton {\r\n    font-family: $font;\r\n    cursor: pointer;\r\n}\r\n\r\nbutton:disabled {\r\n    cursor: default;\r\n}","//color\r\n$theme-color:brown;\r\n$font-color-light:burlywood;\r\n$font-color-dark:brown;\r\n$widget-header-color:rgb(165, 50, 42);\r\n$widget-theme-color:rgb(248, 210, 160);\r\n$body-color: rgb(255, 226, 188);\r\n$button-color:rgb(95, 27, 27);\r\n$button-link-color:rgb(219, 154, 70);\r\n\r\n//space\r\n$xs-size:0.2rem;\r\n$s-size:1.2rem;\r\n$m-size:1.6rem;\r\n$l-size:3.2rem;\r\n$xl-size:4.8rem;\r\n\r\n//font family\r\n$font:'Courier New', Courier, monospace;\r\n\r\n//breakPoint\r\n$desktop-breakpoint:45rem;",".header {\r\n    background-color: $theme-color;\r\n    color: $font-color-light;\r\n    margin-bottom: $m-size;\r\n    padding: $m-size 0;\r\n}\r\n.header__title {\r\n    font-size: $l-size;\r\n    margin:0rem;\r\n}\r\n.header__subtitle {\r\n    font-size:$m-size;\r\n    font-weight: 500;\r\n    margin:0;\r\n}\r\n@media (min-width:$desktop-breakpoint){\r\n    .header {\r\n        margin-bottom: $xl-size;\r\n    }\r\n}",".container {\r\n    max-width: 60rem;\r\n    margin:0 auto; \r\n    padding: 0 $m-size;\r\n}","//big-button\r\n.big-button {\r\n    color: $font-color-light;\r\n    background: $button-color;\r\n    border:none;\r\n    border-bottom: .6rem solid darken($button-color,10%);\r\n    font-weight: 800;\r\n    font-size: $l-size;\r\n    margin-bottom: $m-size;\r\n    padding: $m-size;\r\n    width: 100%;\r\n}\r\n.big-button:disabled {\r\n    opacity: .5;\r\n}\r\n.big-button:hover {\r\n    background: lighten($button-color, 10%);\r\n}\r\n@media(min-width:$desktop-breakpoint){\r\n    .big-button {\r\n        margin-bottom: $xl-size;\r\n    }\r\n}\r\n\r\n//buttion\r\n.button {\r\n    color: $font-color-light;\r\n    background: $button-color;\r\n    border:none;\r\n    border-bottom: .6rem solid darken($button-color,10%);\r\n    font-weight: 500;\r\n    font-size: $m-size;\r\n    padding: $s-size;\r\n}\r\n.button:hover {\r\n    background: lighten($button-color, 10%);\r\n}\r\n\r\n.button__link {\r\n    color: $button-link-color;\r\n    font-weight: 500;\r\n    font-size: $m-size;\r\n    background:none;\r\n    border:none;\r\n    padding: 0;\r\n}\r\n\r\n.button__link:hover {\r\n    color: darken($button-link-color,20%);\r\n}\r\n\r\n.button__link.chance {\r\n    margin: 0 $s-size;\r\n    @media(min-width: $desktop-breakpoint){\r\n        padding: $xs-size $s-size ;\r\n        margin: 0 $s-size;\r\n        border: 1px solid darken($button-link-color,20%);\r\n        border-radius: 200px;\r\n    }\r\n}",".option {\r\n    display: flex;\r\n    flex-direction: row;\r\n    justify-content: space-between;\r\n    padding:$m-size $m-size;\r\n    border-bottom: 2px solid lighten($widget-theme-color,5%);\r\n    position: relative;\r\n}\r\n\r\n.option__text {\r\n    display: flex;\r\n    align-items: center;\r\n    color:$font-color-dark;\r\n    font-weight: 500;\r\n    font-size: $m-size;\r\n    word-break: break-all;\r\n    width: 100px;\r\n    @media(min-width: $desktop-breakpoint){\r\n        width: 300px;\r\n    }\r\n}\r\n\r\n.option__text--chance {\r\n    color:$font-color-dark;\r\n}\r\n\r\n.option-chance {\r\n    display: flex;\r\n    flex-direction: row;\r\n    align-items: center;\r\n    @media(min-width: $desktop-breakpoint){\r\n        position: absolute;\r\n        left: 330px;\r\n    }\r\n}",".addOption-error {\r\n    color: $font-color-dark;\r\n    font-weight: 600;\r\n    font-style:italic;\r\n    padding: 0 $l-size;\r\n    margin: $s-size 0 0 0;\r\n}\r\n.addOption {\r\n    display: flex;\r\n    flex-direction: column;\r\n    padding:$m-size;\r\n}\r\n.addOption__input {\r\n    color: $font-color-dark;\r\n    padding: $s-size;\r\n    flex-grow: 1;\r\n    border: 2px solid darken($theme-color,10%);\r\n    border-radius: $s-size;\r\n    margin:0 0 $s-size 0;\r\n    font-size: $m-size;\r\n    background: lighten($widget-theme-color,10%);\r\n}\r\n\r\n@media(min-width:$desktop-breakpoint) {\r\n    .addOption {\r\n        flex-direction: row;\r\n    }\r\n    .addOption__input {\r\n        margin:0 $s-size 0 0;\r\n    }\r\n}",".widget {\r\n    background:$widget-theme-color; \r\n    margin-bottom: $xl-size;\r\n}\r\n\r\n.widget__message {\r\n    text-align: center;\r\n    padding: $xl-size;\r\n    color: $font-color-dark;\r\n}\r\n\r\n.widget-header {\r\n    background: $widget-header-color;\r\n    color:$font-color-light;\r\n    padding: $s-size;\r\n    display: flex;\r\n    flex-direction: row;\r\n    justify-content: space-between;\r\n    position: relative;\r\n}\r\n\r\n.widget-chance {\r\n    display: flex;\r\n    flex-direction: column;\r\n    @media(min-width: $desktop-breakpoint){\r\n        position: absolute;\r\n        left: 365px;\r\n    };\r\n}\r\n",".ReactModalPortal >div {\r\n    opacity: 0;\r\n}\r\n.ReactModalPortal .ReactModal__Overlay {\r\n    display: flex;\r\n    align-items: center;\r\n    justify-content: center;\r\n    transition: opacity 200ms ease-in-out;\r\n}\r\n.ReactModalPortal .ReactModal__Overlay--after-open {\r\n    opacity: 1;\r\n}\r\n.ReactModalPortal .ReactModal__Overlay--before-close {\r\n    opacity: 0;\r\n}\r\n.modal {\r\n    background: $theme-color;\r\n    color:$font-color-light;\r\n    max-width: 30rem;\r\n    outline: none;\r\n    text-align: center;\r\n    padding: $l-size;\r\n}\r\n.modal__title {\r\n    font-size: $m-size;\r\n    font-weight: 600;\r\n    margin-bottom: $l-size;\r\n}\r\n.modal__body {\r\n    font-size: $l-size;\r\n    font-weight: 600;\r\n    margin-bottom: $l-size;\r\n    word-break: break-all;\r\n}\r\n.modal__button {\r\n    background: $widget-theme-color;\r\n    border-radius: $l-size;\r\n    border: 2px solid darken($theme-color, 20%);\r\n    font-size: $m-size;\r\n    color: $font-color-dark;\r\n    font-weight: 700;\r\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

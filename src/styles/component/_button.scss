@@ -37,7 +37,7 @@
 }
 
 .button__link {
-    color: $font-color-light;
+    color: $button-link-color;
     font-weight: 500;
     font-size: $m-size;
     background:none;
@@ -46,5 +46,15 @@
 }
 
 .button__link:hover {
-    color: darken($font-color-light,20%);
+    color: darken($button-link-color,20%);
+}
+
+.button__link.chance {
+    margin: 0 $s-size;
+    @media(min-width: $desktop-breakpoint){
+        padding: $xs-size $s-size ;
+        margin: 0 $s-size;
+        border: 1px solid darken($button-link-color,20%);
+        border-radius: 200px;
+    }
 }

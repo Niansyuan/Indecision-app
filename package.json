@@ -12,7 +12,7 @@
     "webpack-cli": "^4.9.0"
   },
   "scripts": {
-    "serve": "live-server public/",
+    "serve": "live-server docs/",
     "build": "webpack",
     "dev-server": "webpack-dev-server"
   },
